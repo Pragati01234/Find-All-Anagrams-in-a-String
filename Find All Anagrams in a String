@@ -1,0 +1,45 @@
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        int lenS, lenP;
+        lenS = s.length();
+        lenP = p.length();
+        List<Integer> res = new ArrayList<>();
+        if(lenP>lenS) return res;
+
+        int[] charsInP = new int[26];
+        calculateFreq(p, charsInP);
+
+        int[] charsInS = new int[26];
+        calculateFreq(s.substring(0, lenP), charsInS);
+        if(equalFreq(charsInP, charsInS)){
+            res.add(0);
+        }
+
+        for(int i=lenP; i<lenS; i++){
+            char charBeforeStartOfWindow = s.charAt(i-lenP);
+            char charAtEndOfWindow = s.charAt(i);
+
+            charsInS[charBeforeStartOfWindow - 'a']--;
+            charsInS[charAtEndOfWindow - 'a']++;
+
+            if(equalFreq(charsInP, charsInS)){
+                res.add(i-lenP+1);
+            }
+        }
+        return res;
+    }
+    
+    private void calculateFreq(String s, int[] chars){
+        for(char ch : s.toCharArray()){
+            chars[ch-'a']++;
+        }
+    }
+    private boolean equalFreq(int[] chars1, int[] chars2){
+        for(int i=0; i<26; i++){
+            if(chars1[i]!=chars2[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+}
